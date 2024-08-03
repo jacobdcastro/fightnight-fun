@@ -51,14 +51,15 @@ graph LR
     end
 
     subgraph "L1 Smart Contracts"
-        BatchDataEOA(<a href="https://etherscan.io/address/0xff00000000000000000000000000000000000010">Batch Inbox Address</a>)
-        L1StandardBridge(<a href="https://github.com/ethereum-optimism/optimism/tree/develop/packages/contracts-bedrock/src/L1/L1StandardBridge.sol">L1StandardBridge</a>)
-        L1ERC721Bridge(<a href="https://github.com/ethereum-optimism/optimism/tree/develop/packages/contracts-bedrock/src/L1/L1ERC721Bridge.sol">L1ERC721Bridge</a>)
-        L1CrossDomainMessenger(<a href="https://github.com/ethereum-optimism/optimism/tree/develop/packages/contracts-bedrock/src/L1/L1CrossDomainMessenger.sol">L1CrossDomainMessenger</a>)
-        L2OutputOracle(<a href="https://github.com/ethereum-optimism/optimism/tree/develop/packages/contracts-bedrock/src/L1/L2OutputOracle.sol">L2OutputOracle</a>)
-        OptimismPortal(<a href="https://github.com/ethereum-optimism/optimism/tree/develop/packages/contracts-bedrock/src/L1/OptimismPortal.sol">OptimismPortal</a>)
-        SuperchainConfig(<a href="https://github.com/ethereum-optimism/optimism/tree/develop/packages/contracts-bedrock/src/L1/SuperchainConfig.sol">SuperchainConfig</a>)
-        SystemConfig(<a href="https://github.com/ethereum-optimism/optimism/tree/develop/packages/contracts-bedrock/src/L1/SystemConfig.sol">SystemConfig</a>)
+        L1StandardBridge(L1StandardBridge)
+        L1ERC721Bridge(L1ERC721Bridge)
+        L1CrossDomainMessenger(L1CrossDomainMessenger)
+        OptimismPortal(OptimismPortal)
+        SuperchainConfig(SuperchainConfig)
+        SystemConfig(SystemConfig)
+        DisputeGameFactory(DisputeGameFactory)
+        FaultDisputeGame(FaultDisputeGame)
+        DelayedWETH(DelayedWETH)
     end
 
     subgraph "User Interactions"
@@ -66,18 +67,18 @@ graph LR
     end
 
     subgraph "System Interactions"
-        Batcher(Batcher)
-        Proposer(Proposer)
-        Guardian(Guardian)
+        Guardian(GUARDIAN)
     end
 
-    subgraph "Layer 2 Interactions"
-        L2Nodes(Layer 2 Nodes)
-    end
-
-    Batcher -->|publish transaction batches| BatchDataEOA
-    Proposer -->|propose state outputs| L2OutputOracle
-    Guardian -->|remove invalid state outputs| L2OutputOracle
+    click L1StandardBridge "https://github.com/ethereum-optimism/optimism/tree/develop/packages/contracts-bedrock/src/L1/L1StandardBridge.sol" "L1StandardBridge.sol"
+    click L1ERC721Bridge "https://github.com/ethereum-optimism/optimism/tree/develop/packages/contracts-bedrock/src/L1/L1ERC721Bridge.sol" "L1ERC721Bridge.sol"
+    click L1CrossDomainMessenger "https://github.com/ethereum-optimism/optimism/tree/develop/packages/contracts-bedrock/src/L1/L1CrossDomainMessenger.sol" "L1CrossDomainMessenger.sol"
+    click OptimismPortal "https://github.com/ethereum-optimism/optimism/tree/develop/packages/contracts-bedrock/src/L1/OptimismPortal.sol" "OptimismPortal.sol"
+    click SuperchainConfig "https://github.com/ethereum-optimism/optimism/tree/develop/packages/contracts-bedrock/src/L1/SuperchainConfig.sol" "SuperchainConfig.sol"
+    click SystemConfig "https://github.com/ethereum-optimism/optimism/tree/develop/packages/contracts-bedrock/src/L1/SystemConfig.sol" "SystemConfig.sol"
+    click DisputeGameFactory "https://github.com/ethereum-optimism/optimism/tree/develop/packages/contracts-bedrock/src/dispute/DisputeGameFactory.sol" "DisputeGameFactory.sol"
+    click FaultDisputeGame "https://github.com/ethereum-optimism/optimism/tree/develop/packages/contracts-bedrock/src/dispute/FaultDisputeGame.sol" "FaultDisputeGame.sol"
+    click DelayedWETH "https://github.com/ethereum-optimism/optimism/tree/develop/packages/contracts-bedrock/src/dispute/weth/DelayedWETH.sol" "DelayedWETH.sol"
 
     ExternalERC20 <-->|mint/burn/transfer| L1StandardBridge
     ExternalERC721 <-->|mint/burn/transfer| L1ERC721Bridge
@@ -89,30 +90,32 @@ graph LR
     L1ERC721Bridge -.->|query pause state| SuperchainConfig
     L1CrossDomainMessenger -.->|query pause state| SuperchainConfig
     OptimismPortal -.->|query pause state| SuperchainConfig
-
     OptimismPortal -.->|query config| SystemConfig
-    OptimismPortal -.->|query proposed states| L2OutputOracle
+    OptimismPortal -.->|query game address| DisputeGameFactory
+    OptimismPortal -.->|query game state| FaultDisputeGame
+    DisputeGameFactory -->|creates instances of| FaultDisputeGame
+    FaultDisputeGame -->|store/retrieve bonds| DelayedWETH
 
     Users <-->|deposit/withdraw ETH/ERC20| L1StandardBridge
     Users <-->|deposit/withdraw ERC721| L1ERC721Bridge
     Users -->|prove/execute withdrawal transactions| OptimismPortal
+    Users -->|create dispute games| DisputeGameFactory
+    Users -->|participate in dispute games| FaultDisputeGame
 
-    L2Nodes -.->|fetch transaction batches| BatchDataEOA
-    L2Nodes -.->|verify output roots| L2OutputOracle
-    L2Nodes -.->|fetch deposit events| OptimismPortal
+    Guardian -->|blacklist dispute games| OptimismPortal
+    Guardian -->|change respected game type| OptimismPortal
 
     classDef extContracts stroke:#ff9,stroke-width:2px;
     classDef l1Contracts stroke:#bbf,stroke-width:2px;
     classDef l1EOA stroke:#bbb,stroke-width:2px;
     classDef userInt stroke:#f9a,stroke-width:2px;
     classDef systemUser stroke:#f9a,stroke-width:2px;
-    classDef l2Nodes stroke:#333,stroke-width:2px
+    classDef critical stroke:#0f0,stroke-width:2px;
     class ExternalERC20,ExternalERC721 extContracts;
-    class L1StandardBridge,L1ERC721Bridge,L1CrossDomainMessenger,L2OutputOracle,OptimismPortal,SuperchainConfig,SystemConfig l1Contracts;
-    class BatchDataEOA l1EOA;
+    class L1StandardBridge,L1ERC721Bridge,L1CrossDomainMessenger,SuperchainConfig,SystemConfig l1Contracts;
     class Users userInt;
     class Batcher,Proposer,Guardian systemUser;
-    class L2Nodes l2Nodes;
+    class OptimismPortal,DisputeGameFactory,FaultDisputeGame,DelayedWETH critical;
 ```
 
 #### Notes for Core L1 Smart Contracts
