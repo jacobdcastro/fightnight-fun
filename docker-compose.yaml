@@ -1,0 +1,54 @@
+services:
+  layer1:
+    build:
+      context: .
+      dockerfile: hack/layer1.Dockerfile
+    container_name: layer1
+    ports:
+      - '8544:8544'
+    networks:
+      - hack
+
+  l1-contracts-deployer:
+    build:
+      context: .
+      dockerfile: hack/l1-contracts-deployer.Dockerfile
+    container_name: l1-contracts-deployer
+    networks:
+      - hack
+    environment:
+      - GS_ADMIN_PRIVATE_KEY
+      - L1_RPC_URL=http://layer1:8544
+    volumes:
+      - ../packages/contracts-bedrock:/packages/contracts-bedrock
+    depends_on:
+      - layer1
+    entrypoint:
+      [
+        'forge',
+        'script',
+        'scripts/Deploy.s.sol:Deploy',
+        '--private-key',
+        '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
+        '--broadcast',
+        '--rpc-url',
+        'http://layer1:8544',
+        '--slow',
+      ]
+
+  # config-user:
+  #   build:
+  #     context: .
+  #     dockerfile: hack/config-user.Dockerfile
+  #   depends_on:
+  #     l1-contracts-deployer:
+  #       condition: service_completed_successfully
+  #   volumes:
+  #     - ./packages/contracts-bedrock/deploy-config:/app/config
+
+networks:
+  hack:
+    driver: bridge
+
+volumes:
+  contracts-bedrock:
