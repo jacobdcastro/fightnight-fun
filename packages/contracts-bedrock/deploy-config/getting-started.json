@@ -1,8 +1,8 @@
 {
-  "l1StartingBlockTag": "0x8acc1e5a2ddd05625f4d8db281ba4d977f5c76da24cc136a96c5275de8ccc3ad",
+  "l1StartingBlockTag": "0xb4514b2a80c33a170ee1152af1c461338aec04f540f50c94dd7661c481b28290",
 
   "l1ChainID": 11155111,
-  "l2ChainID": 1337,
+  "l2ChainID": 42069,
   "l2BlockTime": 2,
   "l1BlockTime": 12,
 
@@ -11,12 +11,12 @@
   "channelTimeout": 300,
 
   "p2pSequencerAddress": "0x3aA1bc4A33Ea87F4c4e6635e488164352D5A19AF",
-  "batchInboxAddress": "0xff00000000000000000000000000000000001337",
+  "batchInboxAddress": "0xff00000000000000000000000000000000042069",
   "batchSenderAddress": "0x51D92D5ACF7727F9ec6cdde0eE49F436497C9190",
 
   "l2OutputOracleSubmissionInterval": 120,
   "l2OutputOracleStartingBlockNumber": 0,
-  "l2OutputOracleStartingTimestamp": 1723012692,
+  "l2OutputOracleStartingTimestamp": 1723166304,
 
   "l2OutputOracleProposer": "0xD174D8a5Ad41a55f54B59B178eb84633E8497A40",
   "l2OutputOracleChallenger": "0x9BE515CdEaf4a385eE16815d9979abFA914aF3Ed",
