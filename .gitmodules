@@ -26,3 +26,6 @@
 [submodule "packages/contracts-bedrock/lib/automate"]
 	path = packages/contracts-bedrock/lib/automate
 	url = https://github.com/gelatodigital/automate
+[submodule "packages/fightnight-contracts/lib/openzeppelin-contracts"]
+	path = packages/fightnight-contracts/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts

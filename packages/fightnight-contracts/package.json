@@ -1,0 +1,11 @@
+{
+  "name": "fightnight-contracts",
+  "version": "0.1.1",
+  "private": true,
+  "devDependencies": {
+    "@chainlink/contracts-ccip": "^1.4.0"
+  },
+  "dependencies": {
+    "@pythnetwork/pyth-sdk-solidity": "^4.0.0"
+  }
+}
