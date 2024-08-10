@@ -1,84 +1,34 @@
-# Sign In with Worldcoin using NextAuth.js
+# World ID Next.js Template
 
-## Overview
-
-NextAuth.js is a complete open-source authentication solution.
-
-This is an example application that shows how `next-auth` can be used to implement Sign In with Worldcoin.
-
-Go to [NextAuth's documentation](https://next-auth.js.org) and [Worldcoin's Sign In documentation](https://docs.worldcoin.org/quick-start/sign-in) for more information and documentation.
+This is a template repository for creating a new project using Next.js, TailwindCSS, and the [World ID SDK](https://id.worldcoin.org). This template isn't intended for use cases that require on-chain verification, but rather for use cases that leverage off-chain web backend verification.
 
 ## Getting Started
 
-### 1. Create the repository from the template and install dependencies
+First, set the correct Node.js version using `nvm` and run the development server:
 
-Click the "Use this Template" button to create a new repository from this template.
-
-```
-git clone your_repo_url
-cd your_repo_name
-pnpm i
+```bash
+nvm use 20
+pnpm i && pnpm dev
 ```
 
-### 2. Configure your app in the Worldcoin Developer Portal
+Copy `.env.example` to `.env.local` and add your World ID App ID and Action Name to the appropriate variables.
 
-Create a new application in the [Worldcoin Developer Portal](https://developer.worldcoin.org/). Staging apps must use the [Worldcoin Simulator](https://simulator.worldcoin.org) for authentication, whereas production apps will use the [World App](https://worldcoin.org/download).
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-Add your callback URLs:
-  - (staging apps only) `http://localhost:3000/api/auth/callback/worldcoin`
-  - `https://your-app-url.com/api/auth/callback/worldcoin`
+This template includes a server action to verify the proof returned by the IDKit widget at `src/app/actions/verify.ts`. Edit this file to handle any backend functions you need to perform after the proof has been verified.
 
-Note your Client ID and Client Secret for the next step.
+You can start editing the client-side page by modifying `src/app/page.tsx`. The page auto-updates as you edit the file. Edit the `onSuccess` function to define frontend behavior once the proof has been verified.
 
-### 3. Configure your local environment
+## Learn More
 
-Copy the .env.example file in this directory to .env.local (which will be ignored by Git):
+To learn more about Next.js and World ID, take a look at the following resources:
 
-```
-cp .env.example .env.local
-```
+-   [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+-   [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+-   [World ID Documentation](https://docs.worldcoin.org/) - learn about World ID features and API.
 
-Add details for your Worldcoin application to the `.env.local` file. Get your Client ID and Client Secret from the [Worldcoin Developer Portal](https://developer.worldcoin.org/).
+## Deploy on Vercel
 
-### 3. (Optional) Configure Additional Authentication Providers
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Worldcoin's provider is pre-configured in this template. If you wish to add more providers, change line 33 of `components/header.tsx` to `signIn()` to allow users to choose their provider from a list and follow the steps below.
-
-1. Review and update options in `pages/api/auth/[...nextauth].js` as needed.
-
-2. When setting up OAuth, in the developer admin page for each of your OAuth services, you should configure the callback URL to use a callback path of `{server}/api/auth/callback/{provider}`.
-
-e.g. For Google OAuth you would use: `http://localhost:3000/api/auth/callback/google`
-
-A list of configured providers and their callback URLs is available from the endpoint `/api/auth/providers`. You can find more information at https://next-auth.js.org/configuration/providers/oauth
-
-3. You can also choose to specify an SMTP server for passwordless sign in via email.
-
-#### Database
-
-A database may be needed needed to persist user accounts and to support email sign in when adding extra providers. However, you can still use NextAuth.js for authentication without a database by using OAuth for authentication. If you do not specify a database, [JSON Web Tokens](https://jwt.io/introduction) will be enabled by default.
-
-You **can** skip configuring a database and come back to it later if you want.
-
-For more information about setting up a database, please check out the following links:
-
-- Docs: [next-auth.js.org/adapters/overview](https://next-auth.js.org/adapters/overview)
-
-### 4. Start the application
-
-To run your site locally, use:
-
-```
-pnpm run dev
-```
-
-To run it in production mode, use:
-
-```
-pnpm run build
-pnpm run start
-```
-
-### 5. Preparing for Production
-
-Follow the [Deployment documentation](https://authjs.dev/guides/basics/deployment) or deploy the example instantly using [Vercel](https://vercel.com). Ensure you set your environment variables in your production environment as well.
+Check out the [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
