@@ -1,66 +1,34 @@
-#!/usr/bin/env bash
-
-# This script is used to generate the getting-started.json configuration file
-# used in the Getting Started quickstart guide on the docs site. Avoids the
-# need to have the getting-started.json committed to the repo since it's an
-# invalid JSON file when not filled in, which is annoying.
-
-reqenv() {
-    if [ -z "${!1}" ]; then
-        echo "Error: environment variable '$1' is undefined"
-        exit 1
-    fi
-}
-
-# Check required environment variables
-reqenv "GS_ADMIN_ADDRESS"
-reqenv "GS_BATCHER_ADDRESS"
-reqenv "GS_PROPOSER_ADDRESS"
-reqenv "GS_SEQUENCER_ADDRESS"
-reqenv "L1_RPC_URL"
-reqenv "L1_CHAIN_ID"
-reqenv "L2_CHAIN_ID"
-reqenv "L1_BLOCK_TIME"
-reqenv "L2_BLOCK_TIME"
-
-# Get the finalized block timestamp and hash
-block=$(cast block finalized --rpc-url "$L1_RPC_URL")
-timestamp=$(echo "$block" | awk '/timestamp/ { print $2 }')
-blockhash=$(echo "$block" | awk '/hash/ { print $2 }')
-
-# Generate the config file
-config=$(cat << EOL
 {
-  "l1StartingBlockTag": "$blockhash",
+  "l1StartingBlockTag": "0x3f05321b46004ea794e8b08092a8d6991d92f2b55e37dc964aac358ed0703f02",
 
-  "l1ChainID": $L1_CHAIN_ID,
-  "l2ChainID": $L2_CHAIN_ID,
-  "l2BlockTime": $L2_BLOCK_TIME,
-  "l1BlockTime": $L1_BLOCK_TIME,
+  "l1ChainID": 11155111,
+  "l2ChainID": 88811888,
+  "l2BlockTime": 12,
+  "l1BlockTime": 12,
 
   "maxSequencerDrift": 600,
   "sequencerWindowSize": 3600,
   "channelTimeout": 300,
 
-  "p2pSequencerAddress": "$GS_SEQUENCER_ADDRESS",
+  "p2pSequencerAddress": "0x3aA1bc4A33Ea87F4c4e6635e488164352D5A19AF",
   "batchInboxAddress": "0xff00000000000000000000000000000000042069",
-  "batchSenderAddress": "$GS_BATCHER_ADDRESS",
+  "batchSenderAddress": "0x51D92D5ACF7727F9ec6cdde0eE49F436497C9190",
 
   "l2OutputOracleSubmissionInterval": 120,
   "l2OutputOracleStartingBlockNumber": 0,
-  "l2OutputOracleStartingTimestamp": $timestamp,
+  "l2OutputOracleStartingTimestamp": 1723241952,
 
-  "l2OutputOracleProposer": "$GS_PROPOSER_ADDRESS",
-  "l2OutputOracleChallenger": "$GS_ADMIN_ADDRESS",
+  "l2OutputOracleProposer": "0xD174D8a5Ad41a55f54B59B178eb84633E8497A40",
+  "l2OutputOracleChallenger": "0x9BE515CdEaf4a385eE16815d9979abFA914aF3Ed",
 
   "finalizationPeriodSeconds": 12,
 
-  "proxyAdminOwner": "$GS_ADMIN_ADDRESS",
-  "baseFeeVaultRecipient": "$GS_ADMIN_ADDRESS",
-  "l1FeeVaultRecipient": "$GS_ADMIN_ADDRESS",
-  "sequencerFeeVaultRecipient": "$GS_ADMIN_ADDRESS",
-  "finalSystemOwner": "$GS_ADMIN_ADDRESS",
-  "superchainConfigGuardian": "$GS_ADMIN_ADDRESS",
+  "proxyAdminOwner": "0x9BE515CdEaf4a385eE16815d9979abFA914aF3Ed",
+  "baseFeeVaultRecipient": "0x9BE515CdEaf4a385eE16815d9979abFA914aF3Ed",
+  "l1FeeVaultRecipient": "0x9BE515CdEaf4a385eE16815d9979abFA914aF3Ed",
+  "sequencerFeeVaultRecipient": "0x9BE515CdEaf4a385eE16815d9979abFA914aF3Ed",
+  "finalSystemOwner": "0x9BE515CdEaf4a385eE16815d9979abFA914aF3Ed",
+  "superchainConfigGuardian": "0x9BE515CdEaf4a385eE16815d9979abFA914aF3Ed",
 
   "baseFeeVaultMinimumWithdrawalAmount": "0x8ac7230489e80000",
   "l1FeeVaultMinimumWithdrawalAmount": "0x8ac7230489e80000",
@@ -75,7 +43,7 @@ config=$(cat << EOL
   "enableGovernance": true,
   "governanceTokenSymbol": "OP",
   "governanceTokenName": "Optimism",
-  "governanceTokenOwner": "$GS_ADMIN_ADDRESS",
+  "governanceTokenOwner": "0x9BE515CdEaf4a385eE16815d9979abFA914aF3Ed",
 
   "l2GenesisBlockGasLimit": "0x1c9c380",
   "l2GenesisBlockBaseFeePerGas": "0x3b9aca00",
@@ -106,8 +74,3 @@ config=$(cat << EOL
   "preimageOracleMinProposalSize": 1800000,
   "preimageOracleChallengePeriod": 86400
 }
-EOL
-)
-
-# Write the config file
-echo "$config" > deploy-config/fightnight-fun.json
