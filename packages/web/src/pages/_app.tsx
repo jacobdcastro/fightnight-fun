@@ -13,11 +13,11 @@ import '@/styles/globals.css'
 const clientId = (process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID || '') as string
 // const secretKey = (process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID || '') as string
 
-const client = createThirdwebClient({
+export const thirdwebClient = createThirdwebClient({
   clientId,
 })
 
-const modeSepolia: Readonly<
+export const modeSepolia: Readonly<
   ChainOptions & {
     rpc: string
   }
@@ -27,7 +27,7 @@ const modeSepolia: Readonly<
   rpc: 'https://mainnet.mode.network/',
 }
 
-const fightnightTestnet: Readonly<
+export const fightnightTestnet: Readonly<
   ChainOptions & {
     rpc: string
   }
@@ -57,7 +57,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <ThirdwebProvider>
       <ConnectButton
-        client={client}
+        client={thirdwebClient}
         wallets={wallets}
         chains={chains}
         theme={'dark'}

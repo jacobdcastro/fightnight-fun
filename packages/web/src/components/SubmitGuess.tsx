@@ -3,6 +3,15 @@ import { VerificationLevel, IDKitWidget, useIDKit } from '@worldcoin/idkit'
 import type { ISuccessResult } from '@worldcoin/idkit'
 import axios from 'axios'
 import { VerifyReply } from '../pages/api/verify'
+import { createThirdwebClient, eth_sendRawTransaction } from 'thirdweb'
+import { getRpcClient } from 'thirdweb/rpc'
+import { ethereum } from 'thirdweb/chains'
+import { fightnightTestnet, thirdwebClient } from '@/pages/_app'
+
+const rpcRequest = getRpcClient({
+  client: thirdwebClient,
+  chain: fightnightTestnet,
+})
 
 export default function Home() {
   const app_id = process.env.NEXT_PUBLIC_WLD_APP_ID as `app_${string}`

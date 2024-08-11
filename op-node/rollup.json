@@ -5,10 +5,10 @@
       "number": 6469453
     },
     "l2": {
-      "hash": "0x158c421c5425e54825afe2b06139183b92939fc7d89693a4a77cd675ca6cdb30",
+      "hash": "0x1acad869ae9bcd103a6345c669ea3efb1a2fedaf458443d0478b594c07fca353",
       "number": 0
     },
-    "l2_time": 1723241952,
+    "l2_time": 1723385416,
     "system_config": {
       "batcherAddr": "0x51d92d5acf7727f9ec6cdde0ee49f436497c9190",
       "overhead": "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -27,8 +27,8 @@
   "delta_time": 0,
   "ecotone_time": 0,
   "batch_inbox_address": "0xff00000000000000000000000000000000042069",
-  "deposit_contract_address": "0x004e4569786af65fee2654c057af47b82b62cd88",
-  "l1_system_config_address": "0x2d5afdaaf5fe8cdd911af9da06322be953dd31b7",
+  "deposit_contract_address": "0x20fbdfca7507566ab3789d8ffc17b4d8914fe491",
+  "l1_system_config_address": "0x4e50dc182cd926af3d5079b28ab33c23d8ff7695",
   "protocol_versions_address": "0x0000000000000000000000000000000000000000",
   "da_challenge_contract_address": "0x0000000000000000000000000000000000000000"
 }
