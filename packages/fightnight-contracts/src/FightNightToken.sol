@@ -2,17 +2,18 @@
 pragma solidity ^0.8.15;
 pragma abicoder v2;
 
+import "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@pythnetwork/pyth-sdk-solidity/IPyth.sol";
 import "@pythnetwork/pyth-sdk-solidity/PythStructs.sol";
-import {CCIPPTT} from "./CCIPPTT.sol";
+import {ProgrammableTokenTransfers} from "./CCIPPTT.sol";
 import {ISwapRouter} from "./uni/ISwapRouter.sol";
 
 
 contract FightNightToken is ERC20, Ownable {
-    /* 
-    Market cap variables 
+    /*
+    Market cap variables
     */
     uint256 marketCap;
     uint256 marketCapTolerance;
@@ -31,8 +32,8 @@ contract FightNightToken is ERC20, Ownable {
         _;
     }
 
-    /* 
-    Bonding curve variables 
+    /*
+    Bonding curve variables
     */
     uint256 public constant DECIMALS = 18**10;
     uint256 public reserveBalance = 10 * DECIMALS;
@@ -40,12 +41,13 @@ contract FightNightToken is ERC20, Ownable {
 
     event Mint(address to, uint256 amountMinted, uint256 amountDeposited);
 
-    /* 
+    /*
     Bridge variables
     */
     address public immutable ccipBridge;
+    address private ccipReceiverAddress;
 
-    /* 
+    /*
     Swap variables
     */
     bool hasSwapped = false;
@@ -56,21 +58,22 @@ contract FightNightToken is ERC20, Ownable {
     IPyth pyth;
     address immutable pythAddress;
     address immutable pythFeedId;
-    
 
-    /* 
-    
-    Core logic 
-    
+
+    /*
+
+    Core logic
+
     */
     constructor(
-        address initialOwner, 
-        string memory name_, 
-        string memory symbol_, 
-        uint256 marketCap_, 
+        address initialOwner,
+        string memory name_,
+        string memory symbol_,
+        uint256 marketCap_,
         uint256 marketCapTolerance_,
         uint256 reserveRatio_,
         address _ccipBridge,
+        address _ccipReceiverAddress,
         ISwapRouter _uniswapRouter,
         address _usdcAddress,
         address _nativeAddress,
@@ -83,6 +86,7 @@ contract FightNightToken is ERC20, Ownable {
         reserveRatio = reserveRatio_;
 
         ccipBridge = _ccipBridge;
+        ccipReceiverAddress = _ccipReceiverAddress;
 
         swapRouter = _uniswapRouter;
         usdcAddress = _usdcAddress;
@@ -130,30 +134,29 @@ contract FightNightToken is ERC20, Ownable {
         _update(address(0), account, value);
     }
 
-    function _bridgeFunds(uint256 amount) internal {
-        CCIPPTT ccip = CCIPPTT(ccipBridge);
+    function _bridgeFunds(uint256 amount) internal returns (bytes32) {
+        ProgrammableTokenTransfers ccip = ProgrammableTokenTransfers(payable(ccipBridge));
 
 
 
-        Client.EVM2AnyMessage message = ccip._buildCCIPMessage(
-            _receiverAddress,
+        Client.EVM2AnyMessage memory message = ccip._buildCCIPMessage(
+            ccipReceiverAddress,
             "",
             usdcAddress,
             amount,
             nativeAddress
         );
-        bytes32 messageId = ccip.sendMessagePayNative(message);
+        bytes32 messageId = ccip.sendMessagePayNative(16015286601757825753, ccipReceiverAddress, string(message.data), usdcAddress, ERC20(usdcAddress).balanceOf(address(this)));
         return messageId;
-        // bridge logic
     }
 
-    /* 
-    
+    /*
+
     Swap logic
 
     */
     function _pullBasePrice() internal returns(PythStructs.Price memory) {
-        PythStructs.Price memory price = pyth.getPriceNoOlderThan(priceFeedId, 60);
+        PythStructs.Price memory price = pyth.getPriceNoOlderThan(bytes32(abi.encodePacked(pythFeedId)), 60);
         return price;
     }
 
@@ -163,17 +166,17 @@ contract FightNightToken is ERC20, Ownable {
     }
 
     function _swapForUSDC() internal returns (uint256) {
-        PythStructs.Price memory price = _pullPrice();
+        PythStructs.Price memory price = _pullBasePrice();
 
         uint256 nativeBalance = balanceOf(address(this));
-        uint256 amountOutIdeal = price.price * nativeBalance;
-        uint256 amountOutMinimum = amountOutIdeal - (amountOutIdeal * 10 / 100);
+        /* uint256 amountOutIdeal = uint256(price.price*DECIMALS) * nativeBalance;
+        uint256 amountOutMinimum = amountOutIdeal - (amountOutIdeal * 10 / 100); */
 
 
         // TODO: fetch instead of hardcode
-        uint256 poolFee = 3000;
+        uint24 poolFee = 3000;
         uint256 deadline = block.timestamp + 60 * 20;
-        
+
         ISwapRouter.ExactInputSingleParams memory params =
             ISwapRouter.ExactInputSingleParams({
                 tokenIn: nativeAddress,
@@ -182,7 +185,7 @@ contract FightNightToken is ERC20, Ownable {
                 recipient: address(this),
                 deadline: block.timestamp,
                 amountIn: nativeBalance,
-                amountOutMinimum: amountOutMinimum,
+                amountOutMinimum: 0,
                 sqrtPriceLimitX96: 0
             });
 
@@ -191,7 +194,7 @@ contract FightNightToken is ERC20, Ownable {
         return amountOut;
     }
 
-    /* 
+    /*
 
     Market Cap logic
 
@@ -213,9 +216,9 @@ contract FightNightToken is ERC20, Ownable {
         }
     }
 
-    /* 
-    
-    Bonding curve logic 
+    /*
+
+    Bonding curve logic
 
     */
     function _calculatePurchase(

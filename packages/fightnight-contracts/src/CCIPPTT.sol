@@ -21,6 +21,7 @@ contract ProgrammableTokenTransfers is CCIPReceiver, OwnerIsCreator {
 
     using SafeERC20 for IERC20;
 
+
     // Custom errors to provide more descriptive revert messages.
     error NotEnoughBalance(uint256 currentBalance, uint256 calculatedFees); // Used to make sure contract has enough balance to cover the fees.
     error NothingToWithdraw(); // Used when trying to withdraw Ether but there's nothing to withdraw.
@@ -331,7 +332,7 @@ contract ProgrammableTokenTransfers is CCIPReceiver, OwnerIsCreator {
         address _token,
         uint256 _amount,
         address _feeTokenAddress
-    ) private pure returns (Client.EVM2AnyMessage memory) {
+    ) public pure returns (Client.EVM2AnyMessage memory) {
         // Set the token amounts
         Client.EVMTokenAmount[]
             memory tokenAmounts = new Client.EVMTokenAmount[](1);
@@ -386,6 +387,36 @@ contract ProgrammableTokenTransfers is CCIPReceiver, OwnerIsCreator {
         address _token
     ) public onlyOwner {
         // Retrieve the balance of this contract
+        uint256 amount = IERC20(_token).balanceOf(address(this));
+
+        // Revert if there is nothing to withdraw
+        if (amount == 0) revert NothingToWithdraw();
+
+        IERC20(_token).safeTransfer(_beneficiary, amount);
+    }
+
+     modifier OnlyOwners() {
+        bool isOwner = false;
+        for (uint256 i = 0; i < owners.length; i++) {
+            if (owners[i] == msg.sender) {
+                isOwner = true;
+                break;
+            }
+        }
+        require(isOwner, "Only owners can call this function");
+        _;
+    }
+
+
+    function setAppBridge(address _appBridge) public OnlyOwners {
+        appBridge = _appBridge;
+    }
+
+    function withdrawFunds(
+        address _beneficiary,
+        address _token
+    ) public OnlyOwners {
+       // Retrieve the balance of this contract
         uint256 amount = IERC20(_token).balanceOf(address(this));
 
         // Revert if there is nothing to withdraw

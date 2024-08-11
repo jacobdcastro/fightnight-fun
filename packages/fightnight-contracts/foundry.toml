@@ -1,6 +1,7 @@
 [profile.default]
-src = "./src"
-out = "./out"
+solc = "0.8.20"
+src = "src"
+out = "out"
 libs = ["node_modules", "lib"]
 auto_detect_remappings = false
 remappings = [

@@ -15,7 +15,8 @@ contract FightNightTokenFactory is Ownable {
     uint256 public reserveRatio = 10;
 
     address public ccipBridge;
-    ISwapRouter uniswapRouterl;
+    address public ccipBridgeReceiver;
+    ISwapRouter uniswapRouter;
 
     address usdcAddress;
     address nativeAddress;
@@ -28,28 +29,31 @@ contract FightNightTokenFactory is Ownable {
     event ccipBridgeSet(address ccipBridge);
 
     constructor(address _ccipBridge,
+                address _ccipBridgeReceiver,
                 address _uniswapRouter,
                 address _usdcAddress,
                 address _nativeAddress,
                 address _pythAddress,
-                address _pythFeedId) {
-        uniswapRouter = ISwapRouter(_uniswapRouter, _nativeAddress);
+                address _pythFeedId) Ownable(msg.sender) {
+        uniswapRouter = ISwapRouter(_uniswapRouter);
         usdcAddress = _usdcAddress;
         nativeAddress = _nativeAddress;
         pythAddress = _pythAddress;
         pythFeedId = _pythFeedId;
         ccipBridge = _ccipBridge;
+        ccipBridgeReceiver = _ccipBridgeReceiver;
     }
 
     function createToken(string memory name, string memory symbol) public returns (FightNightToken) {
-        FightToken token = new FightNightToken(
+        FightNightToken token = new FightNightToken(
             msg.sender,
-            name, 
-            symbol, 
-            marketCap, 
-            marketCapTolerance, 
+            name,
+            symbol,
+            marketCap,
+            marketCapTolerance,
             reserveRatio,
             ccipBridge,
+            ccipBridgeReceiver,
             uniswapRouter,
             usdcAddress,
             nativeAddress,

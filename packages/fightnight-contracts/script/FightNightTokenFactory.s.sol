@@ -23,12 +23,12 @@ PYTH PRICE FEED ETH/USD
 0xff61491a931112ddf1bd8147cd1b641375f79f5825126d665480874634fd0ace
 */
 
-contract DeployOnBase is Script {
+/* contract DeployOnBase is Script {
     address public routerContract = 0xD3b06cEbF099CE7DA4AcCf578aaebFDBd6e88a93;
     address public linkContract = 0xE4aB69C077896252FAFBD49EFD26B5D171A32410;
 
-    address public sourceBridge = ;
-    address public destinationBridge = ;
+    address public sourceBridge;
+    address public destinationBridge;
 
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
@@ -41,9 +41,9 @@ contract DeployOnBase is Script {
 
         vm.stopBroadcast();
     }
-}
+} */
 
-contract MyScript is Script {
+/* contract MyScript is Script {
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
@@ -56,4 +56,4 @@ contract MyScript is Script {
 
         vm.stopBroadcast();
     }
-}
+} */
