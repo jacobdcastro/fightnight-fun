@@ -1,0 +1,138 @@
+[package]
+name = "world_id_sequencer"
+version = "0.0.1"
+edition = "2021"
+
+[dependencies]
+reth = { path = "../reth/bin/reth" }
+reth-auto-seal-consensus = { path = "../reth/crates/consensus/auto-seal" }
+reth-basic-payload-builder = { path = "../reth/crates/payload/basic" }
+reth-beacon-consensus = { path = "../reth/crates/consensus/beacon" }
+reth-bench = { path = "../reth/bin/reth-bench" }
+reth-blockchain-tree = { path = "../reth/crates/blockchain-tree" }
+reth-blockchain-tree-api = { path = "../reth/crates/blockchain-tree-api" }
+reth-chain-state = { path = "../reth/crates/chain-state" }
+reth-chainspec = { path = "../reth/crates/chainspec" }
+reth-cli = { path = "../reth/crates/cli/cli" }
+reth-cli-commands = { path = "../reth/crates/cli/commands" }
+reth-cli-runner = { path = "../reth/crates/cli/runner" }
+reth-cli-util = { path = "../reth/crates/cli/util" }
+reth-codecs = { path = "../reth/crates/storage/codecs" }
+reth-codecs-derive = { path = "../reth/crates/storage/codecs/derive" }
+reth-config = { path = "../reth/crates/config" }
+reth-consensus = { path = "../reth/crates/consensus/consensus" }
+reth-consensus-common = { path = "../reth/crates/consensus/common" }
+reth-consensus-debug-client = { path = "../reth/crates/consensus/debug-client" }
+reth-db = { path = "../reth/crates/storage/db", default-features = false }
+reth-db-api = { path = "../reth/crates/storage/db-api" }
+reth-db-common = { path = "../reth/crates/storage/db-common" }
+reth-discv4 = { path = "../reth/crates/net/discv4" }
+reth-discv5 = { path = "../reth/crates/net/discv5" }
+reth-dns-discovery = { path = "../reth/crates/net/dns" }
+reth-downloaders = { path = "../reth/crates/net/downloaders" }
+reth-e2e-test-utils = { path = "../reth/crates/e2e-test-utils" }
+reth-ecies = { path = "../reth/crates/net/ecies" }
+reth-engine-primitives = { path = "../reth/crates/engine/primitives" }
+reth-engine-tree = { path = "../reth/crates/engine/tree" }
+reth-engine-service = { path = "../reth/crates/engine/service" }
+reth-engine-util = { path = "../reth/crates/engine/util" }
+reth-errors = { path = "../reth/crates/errors" }
+reth-eth-wire = { path = "../reth/crates/net/eth-wire" }
+reth-eth-wire-types = { path = "../reth/crates/net/eth-wire-types" }
+reth-ethereum-cli = { path = "../reth/crates/ethereum/cli" }
+reth-ethereum-consensus = { path = "../reth/crates/ethereum/consensus" }
+reth-ethereum-engine-primitives = { path = "../reth/crates/ethereum/engine-primitives" }
+reth-ethereum-forks = { path = "../reth/crates/ethereum-forks" }
+reth-ethereum-payload-builder = { path = "../reth/crates/ethereum/payload" }
+reth-etl = { path = "../reth/crates/etl" }
+reth-evm = { path = "../reth/crates/evm" }
+reth-evm-ethereum = { path = "../reth/crates/ethereum/evm" }
+reth-evm-optimism = { path = "../reth/crates/optimism/evm" }
+reth-execution-errors = { path = "../reth/crates/evm/execution-errors" }
+reth-execution-types = { path = "../reth/crates/evm/execution-types" }
+reth-exex = { path = "../reth/crates/exex/exex" }
+reth-exex-test-utils = { path = "../reth/crates/exex/test-utils" }
+reth-exex-types = { path = "../reth/crates/exex/types" }
+reth-fs-util = { path = "../reth/crates/fs-util" }
+reth-ipc = { path = "../reth/crates/rpc/ipc" }
+reth-libmdbx = { path = "../reth/crates/storage/libmdbx-rs" }
+reth-mdbx-sys = { path = "../reth/crates/storage/libmdbx-rs/mdbx-sys" }
+reth-metrics = { path = "../reth/crates/metrics" }
+reth-metrics-derive = { path = "../reth/crates/metrics/metrics-derive" }
+reth-net-banlist = { path = "../reth/crates/net/banlist" }
+reth-net-nat = { path = "../reth/crates/net/nat" }
+reth-network = { path = "../reth/crates/net/network" }
+reth-network-api = { path = "../reth/crates/net/network-api" }
+reth-network-p2p = { path = "../reth/crates/net/p2p" }
+reth-network-peers = { path = "../reth/crates/net/peers", default-features = false }
+reth-network-types = { path = "../reth/crates/net/network-types" }
+reth-nippy-jar = { path = "../reth/crates/storage/nippy-jar" }
+reth-node-api = { path = "../reth/crates/node/api" }
+reth-node-builder = { path = "../reth/crates/node/builder" }
+reth-node-core = { path = "../reth/crates/node/core" }
+reth-node-ethereum = { path = "../reth/crates/ethereum/node" }
+reth-node-events = { path = "../reth/crates/node/events" }
+reth-node-metrics = { path = "../reth/crates/node/metrics" }
+reth-node-optimism = { path = "../reth/crates/optimism/node", features = [
+  "optimism",
+] }
+reth-optimism-cli = { path = "../reth/crates/optimism/cli" }
+reth-optimism-consensus = { path = "../reth/crates/optimism/consensus" }
+reth-optimism-payload-builder = { path = "../reth/crates/optimism/payload" }
+reth-optimism-primitives = { path = "../reth/crates/optimism/primitives" }
+reth-optimism-rpc = { path = "../reth/crates/optimism/rpc" }
+reth-payload-builder = { path = "../reth/crates/payload/builder" }
+reth-payload-primitives = { path = "../reth/crates/payload/primitives" }
+reth-payload-validator = { path = "../reth/crates/payload/validator" }
+reth-primitives = { path = "../reth/crates/primitives", default-features = false, features = [
+  "std",
+] }
+reth-primitives-traits = { path = "../reth/crates/primitives-traits", default-features = false }
+reth-provider = { path = "../reth/crates/storage/provider" }
+reth-prune = { path = "../reth/crates/prune/prune" }
+reth-prune-types = { path = "../reth/crates/prune/types" }
+reth-revm = { path = "../reth/crates/revm" }
+reth-rpc = { path = "../reth/crates/rpc/rpc" }
+reth-rpc-api = { path = "../reth/crates/rpc/rpc-api" }
+reth-rpc-api-testing-util = { path = "../reth/crates/rpc/rpc-testing-util" }
+reth-rpc-builder = { path = "../reth/crates/rpc/rpc-builder" }
+reth-rpc-engine-api = { path = "../reth/crates/rpc/rpc-engine-api" }
+reth-rpc-eth-api = { path = "../reth/crates/rpc/rpc-eth-api" }
+reth-rpc-eth-types = { path = "../reth/crates/rpc/rpc-eth-types", default-features = false }
+reth-rpc-layer = { path = "../reth/crates/rpc/rpc-layer" }
+reth-rpc-server-types = { path = "../reth/crates/rpc/rpc-server-types" }
+reth-rpc-types = { path = "../reth/crates/rpc/rpc-types", default-features = false, features = [
+  "jsonrpsee-types",
+] }
+reth-rpc-types-compat = { path = "../reth/crates/rpc/rpc-types-compat" }
+reth-stages = { path = "../reth/crates/stages/stages" }
+reth-stages-api = { path = "../reth/crates/stages/api" }
+reth-stages-types = { path = "../reth/crates/stages/types" }
+reth-static-file = { path = "../reth/crates/static-file/static-file" }
+reth-static-file-types = { path = "../reth/crates/static-file/types" }
+reth-storage-api = { path = "../reth/crates/storage/storage-api" }
+reth-storage-errors = { path = "../reth/crates/storage/errors" }
+reth-tasks = { path = "../reth/crates/tasks" }
+reth-testing-utils = { path = "../reth/testing/testing-utils" }
+reth-tokio-util = { path = "../reth/crates/tokio-util" }
+reth-tracing = { path = "../reth/crates/tracing" }
+reth-transaction-pool = { path = "../reth/crates/transaction-pool" }
+reth-trie = { path = "../reth/crates/trie/trie" }
+reth-trie-common = { path = "../reth/crates/trie/common" }
+reth-trie-db = { path = "../reth/crates/trie/db" }
+reth-trie-parallel = { path = "../reth/crates/trie/parallel" }
+
+# Add these dependencies:
+parking_lot = "0.12"
+async-trait = "0.1"
+clap = "4.0"
+tokio = { version = "1.0", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+reqwest = { version = "0.11", features = ["json"] }
+jsonrpsee = { version = "0.16.2", features = [
+  "http-client",
+  "macros",
+  "server",
+  "ws-client",
+] }
