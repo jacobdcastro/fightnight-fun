@@ -1,6 +1,8 @@
+'use client'
 import { VerificationLevel, IDKitWidget, useIDKit } from '@worldcoin/idkit'
 import type { ISuccessResult } from '@worldcoin/idkit'
-import { verify } from '../actions/verify'
+import axios from 'axios'
+import { VerifyReply } from './api/verify'
 
 export default function Home() {
   const app_id = process.env.NEXT_PUBLIC_WLD_APP_ID as `app_${string}`
@@ -16,7 +18,6 @@ export default function Home() {
   const { setOpen } = useIDKit()
 
   const onSuccess = (result: ISuccessResult) => {
-    // This is where you should perform frontend actions once a user has been verified, such as redirecting to a new page
     window.alert(
       'Successfully verified with World ID! Your nullifier hash is: ' +
         result.nullifier_hash
@@ -24,15 +25,20 @@ export default function Home() {
   }
 
   const handleProof = async (result: ISuccessResult) => {
-    console.log(
-      'Proof received from IDKit, sending to backend:\n',
-      JSON.stringify(result)
-    ) // Log the proof from IDKit to the console for visibility
-    const data = await verify(result)
-    if (data.success) {
-      console.log('Successful response from backend:\n', JSON.stringify(data)) // Log the response from our backend for visibility
-    } else {
-      throw new Error(`Verification failed: ${data.detail}`)
+    console.log('Proof received from IDKit, sending to backend:\n', result)
+    try {
+      const { data, status } = await axios.post<VerifyReply>('/api/verify', {
+        proof: {
+          nullifier_hash: result.nullifier_hash,
+          merkle_root: result.merkle_root,
+          proof: result.proof,
+          verification_level: VerificationLevel.Device,
+        },
+      })
+
+      console.log('Successful response from backend:\n', JSON.stringify(data))
+    } catch (error) {
+      console.error(`Verification failed: ${error}`)
     }
   }
 
@@ -43,9 +49,9 @@ export default function Home() {
         <IDKitWidget
           action={action}
           app_id={app_id}
-          onSuccess={onSuccess}
           handleVerify={handleProof}
-          verification_level={VerificationLevel.Orb} // Change this to VerificationLevel.Device to accept Orb- and Device-verified users
+          onSuccess={onSuccess}
+          verification_level={VerificationLevel.Device}
         />
         <button
           className="border border-black rounded-md"
