@@ -1,11 +1,15 @@
 {
-  "name": "fightnight-contracts",
-  "version": "0.1.1",
+  "name": "fightnight-contracts-extracted",
+  "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "devDependencies": {
     "@chainlink/contracts-ccip": "^1.4.0"
   },
   "dependencies": {
+    "@pythnetwork/entropy-sdk-solidity": "^1.5.0",
     "@pythnetwork/pyth-sdk-solidity": "^4.0.0"
   }
 }

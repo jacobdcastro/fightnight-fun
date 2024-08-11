@@ -1,19 +1,20 @@
 [profile.default]
-solc = "0.8.20"
 src = "src"
 out = "out"
-libs = ["node_modules", "lib"]
-auto_detect_remappings = false
-remappings = [
+libs = ["lib","node_modules"]
+remappings=[
     "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
     "@chainlink/contracts-ccip/=node_modules/@chainlink/contracts-ccip",
-    "@pythnetwork/pyth-sdk-solidity/=node_modules/@pythnetwork/pyth-sdk-solidity"
+    "@pythnetwork/pyth-sdk-solidity/=node_modules/@pythnetwork/pyth-sdk-solidity",
+    "@pythnetwork/entropy-sdk-solidity/=node_modules/@pythnetwork/entropy-sdk-solidity"
 ]
 build_info = true
-extra_output = ["storageLayout"]
 
 [rpc_endpoints]
-sepolia = "${SEPOLIA_RPC_URL}"
+sepolia = "${ETH_SEPOLIA_RPC_URL}"
+
 
 [etherscan]
-sepolia = { key = "${ETHERSCAN_API_KEY}" }
+sepolia = { key = "${ETH_EXPLORER_API_KEY}" }
+base = { key = "${BASE_EXPLORER_API_KEY}" }
+optimism = { key = "${OP_EXPLORER_API_KEY}" }

@@ -4,7 +4,7 @@ pragma abicoder v2;
 
 import {FightNightToken} from "./FightNightToken.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import {ISwapRouter} from "./uni/ISwapRouter.sol";
+import {ISwapRouter} from "./uniswap/ISwapRouter.sol";
 
 // TODO: ensure same symbol/name can't be created
 contract FightNightTokenFactory is Ownable {
@@ -21,7 +21,7 @@ contract FightNightTokenFactory is Ownable {
     address usdcAddress;
     address nativeAddress;
     address pythAddress;
-    address pythFeedId;
+    bytes32 pythFeedId;
 
     event TokenCreated(address indexed tokenAddress, address creator);
     event MarketCapSet(uint256 marketCap, uint256 marketCapTolerance);
@@ -34,7 +34,7 @@ contract FightNightTokenFactory is Ownable {
                 address _usdcAddress,
                 address _nativeAddress,
                 address _pythAddress,
-                address _pythFeedId) Ownable(msg.sender) {
+                bytes32 _pythFeedId) Ownable(msg.sender) {
         uniswapRouter = ISwapRouter(_uniswapRouter);
         usdcAddress = _usdcAddress;
         nativeAddress = _nativeAddress;

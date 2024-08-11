@@ -7,8 +7,8 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@pythnetwork/pyth-sdk-solidity/IPyth.sol";
 import "@pythnetwork/pyth-sdk-solidity/PythStructs.sol";
-import {ProgrammableTokenTransfers} from "./CCIPPTT.sol";
-import {ISwapRouter} from "./uni/ISwapRouter.sol";
+import {ProgrammableTokenTransfers} from "./CCIPProgrammableTokenTransfers.sol";
+import {ISwapRouter} from "./uniswap/ISwapRouter.sol";
 
 
 contract FightNightToken is ERC20, Ownable {
@@ -56,8 +56,7 @@ contract FightNightToken is ERC20, Ownable {
     address immutable nativeAddress;
 
     IPyth pyth;
-    address immutable pythAddress;
-    address immutable pythFeedId;
+    bytes32 immutable pythFeedId;
 
 
     /*
@@ -78,7 +77,7 @@ contract FightNightToken is ERC20, Ownable {
         address _usdcAddress,
         address _nativeAddress,
         address _pythAddress,
-        address _pythFeedId
+        bytes32 _pythFeedId
     ) ERC20(name_, symbol_) Ownable(initialOwner) {
         _checkValidMarketCap(marketCap_, marketCapTolerance_);
         marketCap = marketCap_;
@@ -124,7 +123,7 @@ contract FightNightToken is ERC20, Ownable {
         }
     }
 
-    function _customMint(address account, uint256 value) internal returns (bytes32) {
+    function _customMint(address account, uint256 value) internal {
         _checkWithinMarketCap(value);
 
         if (account == address(0)) {
@@ -139,7 +138,7 @@ contract FightNightToken is ERC20, Ownable {
 
 
 
-        Client.EVM2AnyMessage memory message = ccip._buildCCIPMessage(
+        Client.EVM2AnyMessage memory message = ccip.constructMessage(
             ccipReceiverAddress,
             "",
             usdcAddress,
@@ -155,8 +154,8 @@ contract FightNightToken is ERC20, Ownable {
     Swap logic
 
     */
-    function _pullBasePrice() internal returns(PythStructs.Price memory) {
-        PythStructs.Price memory price = pyth.getPriceNoOlderThan(bytes32(abi.encodePacked(pythFeedId)), 60);
+    function _pullBasePrice() internal view returns(PythStructs.Price memory) {
+        PythStructs.Price memory price = pyth.getPriceNoOlderThan(pythFeedId, 60);
         return price;
     }
 
@@ -166,16 +165,18 @@ contract FightNightToken is ERC20, Ownable {
     }
 
     function _swapForUSDC() internal returns (uint256) {
+        // TODO: reconnect
+        /* 
         PythStructs.Price memory price = _pullBasePrice();
 
+        uint256 amountOutIdeal = uint256(price.price*DECIMALS) * nativeBalance;
+        uint256 amountOutMinimum = amountOutIdeal - (amountOutIdeal * 10 / 100); 
+        */
         uint256 nativeBalance = balanceOf(address(this));
-        /* uint256 amountOutIdeal = uint256(price.price*DECIMALS) * nativeBalance;
-        uint256 amountOutMinimum = amountOutIdeal - (amountOutIdeal * 10 / 100); */
 
 
         // TODO: fetch instead of hardcode
         uint24 poolFee = 3000;
-        uint256 deadline = block.timestamp + 60 * 20;
 
         ISwapRouter.ExactInputSingleParams memory params =
             ISwapRouter.ExactInputSingleParams({
