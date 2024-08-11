@@ -71,20 +71,21 @@ export const DeployToken = () => {
   }
 
   return (
-    <section>
-      <h1>Start a Fight</h1>
+    <section className='flex max-w-xl mx-auto flex-col p-8 gap-4 bg-lime-200 border-solid border-lime-600 border-4 justify-center items-center'>
+      <h1 className='font-bold text-2xl'>Start a Fight</h1>
 
       {formState === 'IDLE' && (
-        <form onSubmit={handleSubmit}>
-          <div>
+        <form onSubmit={handleSubmit} className='flex flex-col gap-4 justify-center items-center'>
+          <div className='flex flex-col justify-center items-center'>
             <h2>Selected Network</h2>
-            <input type="text" value={chain?.name} disabled />
+            <input type="text" value={chain?.name} className='text-center w-full' disabled />
           </div>
 
-          <div>
+          <div className='flex flex-col justify-center items-center'>
             <h2>Choose a Game</h2>
             <select
               value={formData.gameType}
+              className='text-center w-full'
               onChange={(e) =>
                 setFormData({ ...formData, gameType: e.target.value })
               }
@@ -95,29 +96,31 @@ export const DeployToken = () => {
             </select>
           </div>
 
-          <div>
+          <div className='flex flex-col justify-center items-center'>
             <h2>Fight Name</h2>
             <input
               type="text"
               placeholder="Fight Coin"
+              className='text-center w-full'
               onChange={(e) =>
                 setFormData({ ...formData, tokenName: e.target.value })
               }
             />
           </div>
 
-          <div>
+          <div className='flex flex-col justify-center items-center'>
             <h2>Token Symbol</h2>
             <input
               type="text"
               placeholder="FIGHT"
+              className='text-center w-full'
               onChange={(e) =>
                 setFormData({ ...formData, tokenSymbol: e.target.value })
               }
             />
           </div>
 
-          <button type="button" onClick={() => handleSubmit()}>
+          <button type="button" onClick={() => handleSubmit()} className='w-full bg-black text-white hover:bg-slate-700 py-[0.3em]'>
             Create Fight
           </button>
         </form>
@@ -135,8 +138,6 @@ export const DeployToken = () => {
       {formState === 'ERROR' && (
         <p>Something went wrong. Let's refresh and start again.</p>
       )}
-
-      <pre>{JSON.stringify(formData, null, 2)}</pre>
     </section>
   )
 }

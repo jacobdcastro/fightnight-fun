@@ -4,6 +4,7 @@ import type { ISuccessResult } from '@worldcoin/idkit'
 import axios from 'axios'
 import { VerifyReply } from './api/verify'
 import { DeployToken } from '@/components/DeployToken'
+import { DeployedTokens } from '@/components/DeployedTokens'
 
 export default function Home() {
   const app_id = process.env.NEXT_PUBLIC_WLD_APP_ID as `app_${string}`
@@ -62,6 +63,7 @@ export default function Home() {
         </button>
       </div>
       <DeployToken />
+      <DeployedTokens />
     </div>
   )
 }
